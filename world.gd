@@ -5,7 +5,11 @@ extends Node3D
 @onready var default_cube: CSGBox3D = $DefaultCube
 
 func _ready() -> void:
+	
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	
 	var random_generator = FastNoiseLite.new()
+	
 	for x in range(world_size.x):
 		for z in range(world_size.z):
 			for y in range(world_size.y):
@@ -16,3 +20,7 @@ func _ready() -> void:
 					add_child(new_cube)
 					
 	remove_child(default_cube)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().quit()
