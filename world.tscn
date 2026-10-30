@@ -2,20 +2,12 @@
 
 [ext_resource type="Script" uid="uid://ddm8yrrlhhppi" path="res://world.gd" id="1_f3sb7"]
 [ext_resource type="PackedScene" uid="uid://m7luxbbbfxfi" path="res://player.tscn" id="2_fj7yv"]
+[ext_resource type="Script" uid="uid://c7feilw7ywv3e" path="res://mesh_instance_3d.gd" id="3_tlwt5"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_giaiw"]
-albedo_color = Color(0.14117648, 0.93333334, 0.18039216, 1)
+[sub_resource type="ArrayMesh" id="ArrayMesh_giaiw"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0ka8l"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tlwt5"]
 vertex_color_use_as_albedo = true
-
-[sub_resource type="BoxMesh" id="BoxMesh_vjk3b"]
-material = SubResource("StandardMaterial3D_0ka8l")
-
-[sub_resource type="MultiMesh" id="MultiMesh_giaiw"]
-transform_format = 1
-use_colors = true
-mesh = SubResource("BoxMesh_vjk3b")
 
 [node name="World" type="Node3D" unique_id=756835798]
 script = ExtResource("1_f3sb7")
@@ -23,18 +15,17 @@ world_size = Vector3(128, 32, 128)
 cut_off = 0.30000000000000004
 colors = Array[Color]([Color(0, 0.5176471, 0, 1), Color(0.6806449, 0.61666536, 0.6171363, 1), Color(0, 0.7294118, 0.8392157, 1), Color(0.5415435, 0.28871372, 0, 1)])
 
-[node name="DefaultCube" type="CSGBox3D" parent="." unique_id=1696944020]
-use_collision = true
-material = SubResource("StandardMaterial3D_giaiw")
-
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1049762147]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 45, 0)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=631578937]
 transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.49999997, 0.70710677, -0.8535533, 0.14644662, 0.49999997, 0, 0, 0)
 
 [node name="Player" parent="." unique_id=851942102 instance=ExtResource("2_fj7yv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 40, 16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 5)
 
-[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="." unique_id=468735930]
-multimesh = SubResource("MultiMesh_giaiw")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=913891903]
+mesh = SubResource("ArrayMesh_giaiw")
+script = ExtResource("3_tlwt5")
+mat = SubResource("StandardMaterial3D_tlwt5")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D" unique_id=293864902]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D" unique_id=1287477240]
