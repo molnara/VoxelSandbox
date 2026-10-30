@@ -45,5 +45,5 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var relative = event.relative * mouse_sensitivity
 		head.rotate_y(-relative.x)
-		eye_camera.rotate_x(relative.y)
+		eye_camera.rotate_x(-relative.y)
 		eye_camera.rotation.x = clamp(eye_camera.rotation.x, deg_to_rad(-40), deg_to_rad(40))
