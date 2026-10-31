@@ -14,3 +14,4 @@ transform = Transform3D(0.14644662, -0.8535533, 0.49999997, 0.49999997, 0.499999
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.611, 35, 34.154)
 
 [node name="ChunkManager" parent="." unique_id=456844419 instance=ExtResource("3_tlwt5")]
+dimensions = Vector3(512, 64, 512)

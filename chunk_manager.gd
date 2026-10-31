@@ -8,6 +8,8 @@ class_name ChunkManager extends Node
 var random = FastNoiseLite.new()
 var number_of_chunks: Vector3
 
+var loading_threads: Array[Thread] = [Thread.new(), Thread.new(), Thread.new(), Thread.new()]
+
 var chunk_class = preload("res://chunk.tscn")
 	
 func _ready() -> void:
@@ -17,14 +19,22 @@ func _ready() -> void:
 	
 	number_of_chunks = dimensions / chunk_size
 	
-	generate_chunks()
+	loading_threads[0].start(generate_chunks.bind(Vector3(0, 0, 0)))
+	loading_threads[1].start(generate_chunks.bind(Vector3(dimensions.x / 2, 0, 0)))
+	loading_threads[2].start(generate_chunks.bind(Vector3(0, 0, dimensions.z /2)))
+	loading_threads[3].start(generate_chunks.bind(Vector3(dimensions.x / 2, 0, dimensions.z /2)))
 
-func generate_chunks() -> void:
-	for x in range(number_of_chunks.x):
-		for z in range(number_of_chunks.z):
+func generate_chunks(pos: Vector3) -> void:
+	var chunks: Vector3 = number_of_chunks / 2;
+	for x in range(chunks.x):
+		for z in range(chunks.z):
 			for y in range(number_of_chunks.y):
 				var new_chunk = chunk_class.instantiate()
-				new_chunk.position = Vector3(x, y, z) * chunk_size
-				add_child(new_chunk)
+				new_chunk.position = Vector3(x, y, z) * chunk_size + pos
 				new_chunk.generate_data(chunk_size, int(dimensions.y), random, colors)
 				new_chunk.generate_mesh()
+				call_deferred("add_child", new_chunk)
+
+func _exit_tree() -> void:
+	for thread in loading_threads:
+		thread.wait_to_finish()

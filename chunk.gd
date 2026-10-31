@@ -56,6 +56,10 @@ var face_colors: Dictionary[Face, Color] = {
 func _ready() -> void:
 	surface_array.resize(Mesh.ARRAY_MAX)
 	mesh_instance.mesh = ArrayMesh.new()
+	
+	if voxels.is_empty(): return
+	
+	commit_mesh()
 
 	
 func generate_data(chunk_size: int, max_height: int, noise: Noise, color_array: Array[Color]) -> void:
@@ -89,8 +93,6 @@ func generate_mesh() -> void:
 			add_face(Face.TOP, pos, color)
 		if not has_neighbour(voxels, Face.BOTTOM, pos):
 			add_face(Face.BOTTOM, pos, color)
-		
-	commit_mesh()
 
 func has_neighbour(data: Dictionary[Vector3, Color], face: Face, pos: Vector3) -> bool:
 	var neighbour_pos = pos + face_normals[face]
