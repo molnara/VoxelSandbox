@@ -1,8 +1,11 @@
-extends MeshInstance3D
+class_name Chunk extends StaticBody3D
 
 @export var mat: Material
 
-@onready var collision_shape = $StaticBody3D/CollisionShape3D
+@onready var collision_shape = $CollisionShape3D
+@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
+
+var voxels: Dictionary[Vector3, Color] = {}
 
 var surface_array: Array = []
 var vertices = PackedVector3Array()
@@ -53,20 +56,34 @@ var face_colors: Dictionary[Face, Color] = {
 func _ready() -> void:
 	surface_array.resize(Mesh.ARRAY_MAX)
 
-func generate_mesh(data: Dictionary[Vector3, Color]) -> void:
-	for pos in data:
-		var color = data[pos]
-		if not has_neighbour(data, Face.FRONT, pos):
+	
+func generate_data(chunk_size: int, max_height: int, noise: Noise, color_array: Array[Color]) -> void:
+		for x in range(chunk_size):
+			for z in range(chunk_size):
+				var rand = ((noise.get_noise_2d(x, z) + 0.5 * noise.get_noise_2d(x * 2, z * 2) + 0.25  * noise.get_noise_2d(x * 4, z * 4)) / 1.75 + 1) / 2
+				var rand_p = pow(rand, 2.1)
+				var height = max_height * rand_p
+				
+				if height < position.y: continue
+				
+				var local_height = height - position.y
+				for y in range(min(local_height, chunk_size)):
+					voxels[Vector3(x, y, z)] = color_array[y % color_array.size()]
+				
+func generate_mesh() -> void:
+	for pos in voxels:
+		var color = voxels[pos]
+		if not has_neighbour(voxels, Face.FRONT, pos):
 			add_face(Face.FRONT, pos, color)
-		if not has_neighbour(data, Face.BACK, pos):
+		if not has_neighbour(voxels, Face.BACK, pos):
 			add_face(Face.BACK, pos, color)
-		if not has_neighbour(data, Face.LEFT, pos):
+		if not has_neighbour(voxels, Face.LEFT, pos):
 			add_face(Face.LEFT, pos, color)
-		if not has_neighbour(data, Face.RIGHT, pos):
+		if not has_neighbour(voxels, Face.RIGHT, pos):
 			add_face(Face.RIGHT, pos, color)
-		if not has_neighbour(data, Face.TOP, pos):
+		if not has_neighbour(voxels, Face.TOP, pos):
 			add_face(Face.TOP, pos, color)
-		if not has_neighbour(data, Face.BOTTOM, pos):
+		if not has_neighbour(voxels, Face.BOTTOM, pos):
 			add_face(Face.BOTTOM, pos, color)
 		
 	commit_mesh()
@@ -89,7 +106,7 @@ func commit_mesh() -> void:
 	surface_array[Mesh.ARRAY_NORMAL] = normals
 	surface_array[Mesh.ARRAY_COLOR] = colors
 
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
-	mesh.surface_set_material(0, mat)
+	mesh_instance.mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_array)
+	mesh_instance.mesh.surface_set_material(0, mat)
 	
-	collision_shape.shape = mesh.create_trimesh_shape()
+	collision_shape.shape = mesh_instance.mesh.create_trimesh_shape()
