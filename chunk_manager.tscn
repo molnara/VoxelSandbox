@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bu3amd2pvtnw3"]
+
+[ext_resource type="Script" uid="uid://dmoh6ubulrjly" path="res://chunk_manager.gd" id="1_r8w0l"]
+
+[node name="ChunkManager" type="Node" unique_id=456844419]
+script = ExtResource("1_r8w0l")
+colors = Array[Color]([Color(5.631298e-06, 0.6781467, 0.21015888, 1), Color(0.7414356, 0.5911067, 0.34272853, 1), Color(0.33098203, 0.1684899, 7.219613e-08, 1), Color(0.4506483, 0.4506483, 0.45064825, 1)])

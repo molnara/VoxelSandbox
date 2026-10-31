@@ -55,12 +55,14 @@ var face_colors: Dictionary[Face, Color] = {
 
 func _ready() -> void:
 	surface_array.resize(Mesh.ARRAY_MAX)
+	mesh_instance.mesh = ArrayMesh.new()
 
 	
 func generate_data(chunk_size: int, max_height: int, noise: Noise, color_array: Array[Color]) -> void:
 		for x in range(chunk_size):
 			for z in range(chunk_size):
-				var rand = ((noise.get_noise_2d(x, z) + 0.5 * noise.get_noise_2d(x * 2, z * 2) + 0.25  * noise.get_noise_2d(x * 4, z * 4)) / 1.75 + 1) / 2
+				var global_pos = Vector2(x + position.x, z + position.z)
+				var rand = ((noise.get_noise_2d(global_pos.x, global_pos.y) + 0.5 * noise.get_noise_2d(global_pos.x * 2, global_pos.y * 2) + 0.25  * noise.get_noise_2d(global_pos.x * 4, global_pos.y * 4)) / 1.75 + 1) / 2
 				var rand_p = pow(rand, 2.1)
 				var height = max_height * rand_p
 				
@@ -71,6 +73,8 @@ func generate_data(chunk_size: int, max_height: int, noise: Noise, color_array: 
 					voxels[Vector3(x, y, z)] = color_array[y % color_array.size()]
 				
 func generate_mesh() -> void:
+	if voxels.is_empty(): return
+	
 	for pos in voxels:
 		var color = voxels[pos]
 		if not has_neighbour(voxels, Face.FRONT, pos):
