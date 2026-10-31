@@ -18,5 +18,4 @@ mesh = SubResource("CapsuleMesh_giaiw")
 [node name="Head" type="Node3D" parent="." unique_id=343599880]
 
 [node name="EyeCamera" type="Camera3D" parent="Head" unique_id=1043692400]
-transform = Transform3D(1, 0, 0, 0, 0.9174213, 0.3979173, 0, -0.3979173, 0.9174213, 0, 0, 0)
 current = true

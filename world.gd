@@ -19,7 +19,7 @@ func _ready() -> void:
 	
 	var start_time = Time.get_ticks_usec()
 	
-	chunk.generate_data(world_size.x, world_size.y, random_noise, colors)
+	chunk.generate_data(int(world_size.x), int(world_size.y), random_noise, colors)
 	chunk.generate_mesh()
 		
 	var end_time = Time.get_ticks_usec()
